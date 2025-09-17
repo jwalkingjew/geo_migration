@@ -4,7 +4,7 @@ import { Client } from 'pg';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from "fs";
 import md5 from 'crypto-js/md5';
-import {Id, Base58, ValueOptionsParams, PropertiesParam, RelationsParam, EntityRelationParams} from "@graphprotocol/grc-20";
+import {Id, Base58, ValueOptionsParams, PropertiesParam, RelationsParam, EntityRelationParams, IdUtils} from "@graphprotocol/grc-20";
 
 import { validate as uuidValidate } from 'uuid';
 
@@ -253,7 +253,7 @@ export function isUUID(str: string): boolean {
   
 export function normalizeToUUID(id: string) {
     if (isUUID(id)) {
-      return Id.Id(id);
+      return Id(id);
     }
   
     //const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{22}$/; // Common Base58 UUID format
@@ -261,13 +261,13 @@ export function normalizeToUUID(id: string) {
   
     if (isValid(id)) {
       try {
-        return Id.Id(Base58.decodeBase58ToUUID(id));
+        return Id(Base58.decodeBase58ToUUID(id));
       } catch (e) {
         // Fall through if decoding fails
       }
     }
   
-    return Id.Id(deterministicIdFromString(id))
+    return Id(deterministicIdFromString(id))
   }
 
 
@@ -308,7 +308,7 @@ export function createRelationsObjectFromArray(
   }
 
   //const output: RelationsParam = {};
-  const output: Record<Id.Id | string, Array<EntityRelationParams>> = {};
+  const output: Record<Id | string, Array<EntityRelationParams>> = {};
 
   relations.forEach(rel => {
     const relationTypeId = normalizeToUUID(rel.type_id);
@@ -319,7 +319,7 @@ export function createRelationsObjectFromArray(
     //}
 
     const relationObj: EntityRelationParams = {
-      id: Id.generate(), // new relation ID
+      id: IdUtils.generate(), // new relation ID
       toEntity: normalizeToUUID(rel.to_entity_id),
       entityId: normalizeToUUID(rel.id),
     };
@@ -356,12 +356,12 @@ export function createRelationsObjectFromArray_generic(
     index: string;
     space_id: string;
   }[] | undefined | null
-): Record<Id.Id, {
-  id: Id.Id;
-  toEntity: Id.Id;
-  toSpace?: Id.Id | undefined;
+): Record<Id, {
+  id: Id;
+  toEntity: Id;
+  toSpace?: Id | undefined;
   position?: string  | undefined;
-  entityId: Id.Id;
+  entityId: Id;
 }> {
   if (!Array.isArray(relations)) {
     console.warn("createRelationsObjectFromArray: input is not an array", relations);
@@ -369,24 +369,24 @@ export function createRelationsObjectFromArray_generic(
   }
 
   const output: Record<string, {
-    id: Id.Id;
-    toEntity: Id.Id;
-    toSpace?: Id.Id | undefined;
+    id: Id;
+    toEntity: Id;
+    toSpace?: Id | undefined;
     position?: string | undefined;
-    entityId: Id.Id;
+    entityId: Id;
   }> = {};
 
   relations.forEach(rel => {
     const relationTypeId = normalizeToUUID(rel.type_id);
 
     const relationObj: {
-      id: Id.Id;
-      toEntity: Id.Id;
-      toSpace?: Id.Id | undefined;
+      id: Id;
+      toEntity: Id;
+      toSpace?: Id | undefined;
       position?: string | undefined;
-      entityId: Id.Id;
+      entityId: Id;
     } = {
-      id: Id.generate(), // new relation ID
+      id: IdUtils.generate(), // new relation ID
       toEntity: normalizeToUUID(rel.to_entity_id),
       entityId: normalizeToUUID(rel.id),
     };
@@ -700,7 +700,7 @@ return result;
 export function createValuesObjectFromAttributes_generic(
   attributes: AttributeInput[] | undefined | null
 ): Array<{
-  property: Id.Id;
+  property: Id;
   value: string;
   options?: { type?: string; unit?: string; format?: string; language?: string };
 }> {
@@ -710,7 +710,7 @@ export function createValuesObjectFromAttributes_generic(
   }
 
   const result: Array<{
-    property: Id.Id;
+    property: Id;
     value: string;
     options?: { type?: string; unit?: string; format?: string; language?: string };
   }> = [];
