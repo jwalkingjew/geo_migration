@@ -3,7 +3,7 @@ import { Client } from 'pg';
 import * as fs from "fs";
 import { DataType, Graph, Op, Position} from "@graphprotocol/grc-20";
 import { createRelationsObjectFromArray, createValuesObjectFromAttributes, normalizeToUUID } from './constants';
-import { EditProposal } from '@graphprotocol/grc-20/proto'
+import { DataType, EditProposal } from '@graphprotocol/grc-20/proto'
 
 function reindexRelations(relations) {
   // sort initial relations list
@@ -20,16 +20,15 @@ function reindexRelations(relations) {
 }
 
 const DataTypeMap: Record<string, DataType> = {
-  "LckSTmjBrYAJaFcDs89am5": 'TEXT',
-  "5xroh3gbWYbWY4oR3nFXzy": 'TEXT',
+  "LckSTmjBrYAJaFcDs89am5": 'STRING',
+  "5xroh3gbWYbWY4oR3nFXzy": 'STRING',
   "LBdMpTNyycNffsF51t2eSp": 'NUMBER',
   "3mswMrL91GuYTfBq29EuNE": 'TIME',
   "UZBZNbA7Uhx1f8ebLi1Qj5": 'POINT',
-  "G9NpD4c7GB7nH5YU9Tesgf": 'CHECKBOX',
+  "G9NpD4c7GB7nH5YU9Tesgf": 'BOOLEAN',
   "AKDxovGvZaPSWnmKnSoZJY": 'RELATION',
   "X8KB1uF84RYppghBSVvhqr": 'RELATION',
 };
-
 
 // ----- main -----
 //Initialize postgres server
@@ -67,7 +66,7 @@ try {
     console.log(spaces.rows.length);
 
     //const set_spaces = ["25omwWh6HYgeRQKCaSpVpa","SgjATMbm41LX6naizMqBVd", "LHDnAidYUSBJuvq7wDPRQZ", "D8akqNQr8RMdCdFHecT2n", "BDuZwkjCg3nPWMDshoYtpS", "Qs46y2TuFyVvgVV3QbbVW1", "DqiHGrgbniQ9RXRbcQArQ2", "8YiKaTRpE7M84pkRhVvGF9", "FhC6CtBwyzXoTi8guF1HEi", "ETLCku7ZPvqysA9sHDw58K"] //Root, Crypto, Crypto events, Regions, Crypto News, SF, Industries, Education, Academia, Technology ETLCku7ZPvqysA9sHDw58K
-    const set_spaces = ["ETLCku7ZPvqysA9sHDw58K"] //Root, Crypto, Crypto events, Regions, Crypto News, SF, Industries, Education, Academia, Technology ETLCku7ZPvqysA9sHDw58K
+    const set_spaces = ["25omwWh6HYgeRQKCaSpVpa"] //Root, Crypto, Crypto events, Regions, Crypto News, SF, Industries, Education, Academia, Technology ETLCku7ZPvqysA9sHDw58K
     for (const space of set_spaces) { //should be spaces.rows
 
         //Any entity that has a types relation to property, do create property and map value type to the correct datatype value
